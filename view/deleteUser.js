@@ -1,5 +1,4 @@
-module.exports.deleteUser = function (uid) {
-
+module.exports.deleteUser = function(navBar, menuLink, uid) {
     return `
 <!DOCTYPE html>
 <html lang="ko">
@@ -16,65 +15,30 @@ module.exports.deleteUser = function (uid) {
 </head>
 <body>
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <img src="/smartfac.png" class="d-inline-block align-top" alt="">&nbsp;&nbsp;&nbsp;
-            <ul class="nav nav-pills mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">로그아웃</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"> </a>
-                </li>
-            </ul>
-            <div class="navbar-text">
-                <p>날씨</p>
-                <p>관리자님 환영합니다.</p>
-            </div>
-        </nav>
+        ${navBar}
         <div class="row" style="margin-top: 30px">
             <div class="col-2">
-                <ul class="nav nav-pills flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/sensor">센서</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/actuator">액츄에이터</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            사용자
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">등록(C)</a>
-                            <a class="dropdown-item" href="/user/list">조회(R)</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"></a>
-                    </li>
-                </ul>
+                ${menuLink}
             </div>
             <div class="col-10">
-             <div class="row" sytle="margin-left: 10px">
-                <div class = "col-12"><h3>사용자 삭제</h3></div>
-                <div class ="col-12"><hr></div>
-                <div class ="col-12"></div>
-                <div class ="col-4">
-                <form action="/user/delete" class="from-horizontal" method="POST">
-                    <input type="hidden" name="uid" value="${uid}"><br>
-                    <p style="text-align: center;">${uid} 사용자를 삭제하시겠십니까?</p><br>
-                    <p style="text-align: center;"><input class="btn btn-primary" type="submit" value="확인">&nbsp;&nbsp;
-                    <button type="button" class = "btn btn-secondary" type="reset">취소</button></p>
-                </form>                        
+                <div class="row" style="margin-left: 10px">
+                    <div class="col-12"><h3>사용자 삭제</h3></div>
+                    <div class="col-12"><hr></div>
+                    <div class="col-2"></div>
+                    <div class="col-4">
+                    <form action="/user/delete" class="form-horizontal" method="POST">
+                        <input type="hidden" name="uid" value="${uid}"><br>
+                        <p style="text-align: center;">${uid} 사용자를 삭제하시겠습니까?</p><br>
+                        <p style="text-align: center;"><input class="btn btn-primary" type="submit" value="확인">&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-secondary" type="reset" onclick="location.href='/user/list'">취소</button></p>
+                    </form>
+                    </div>
+                    <div class="col-6"></div>
+                </div>
             </div>
-            <div class="cil-6"></div>
         </div>
     </div>
 </body>
 </html>
     `;
 }
-//<img src="greenlogo.png" class="d-inline-block align-top" alt="">&nbsp;&nbsp;&nbsp;
