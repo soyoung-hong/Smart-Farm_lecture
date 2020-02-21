@@ -1,4 +1,8 @@
-module.exports.listUser = function(navBar, menuLink, userObj) {
+  
+const template = require('./template');
+const header = template.header();
+
+module.exports.listUser = function(navBar, menuLink, userObj, totalPage, pageNo) {
     let users = '';
     for (user of userObj) {
         users += `
@@ -7,22 +11,33 @@ module.exports.listUser = function(navBar, menuLink, userObj) {
                 <td><a href="/user/${user.name}.html">${user.name}</a></td>
                 <td>${user.deptName}</td><td>${user.tel}</td><td>${user.ts}</td>
                 <td><a href="/user/update/uid/${user.uid}"><i class="fas fa-edit"></i></a>&nbsp;&nbsp;
-                    <a href="/user/delete/uid/${user.uid}"><i class="fas fa-trash-alt"></i></td>
+                    <a href="/user/delete/uid/${user.uid}"><i class="fas fa-trash-alt"></i>&nbsp;&nbsp;
             </tr>`;
     }
+    //페이지 지원
+    let pages = `<li class="page-item disabled">
+                 <a class="page-link active" href="#" aria-label="Previous">
+                 <span aria-hidden="true">&laquo;</span></a>
+            </li>`;
+    for (let page=1; page <= totalPage; page++) {
+     if (page == pageNo)
+         pages += `<li class="page-item active" aria-current="page">
+                  <span class="page-link">
+                     ${page}<span class="sr-only">(current)</span>
+                  </span>
+             </li>`;
+    else
+    pages += `<li class="page-item"><a class="page-link" href="/user/list/page/${page}">${page}</a></li>`;
+    }
+    pages += `<li class="page-item">
+    <a class="page-link" href="#" aria-label="Next">
+    <span aria-hidden="true">&raquo;</span></a>
+    </li>`;
     return `
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <title>강남 스마트팜</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    ${header}
 </head>
 <body>
     <div class="container">
@@ -48,6 +63,8 @@ module.exports.listUser = function(navBar, menuLink, userObj) {
                                 ${users}
                             </tbody>
                         </table>
+                        <ul class="pagination justify-content-center">
+                        ${pages}
                     </div>
                     <div class="col-1"></div>
                 </div>

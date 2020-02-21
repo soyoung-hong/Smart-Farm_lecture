@@ -1,30 +1,25 @@
-module.exports.home = function(navBar, menuLink) {
-    let temp = 20;
-    let humid = 30;
-    let cds = 98;
-    let dist = 10.5;
-    let sTime = "2020-02-14 09:50:23";
-    let sUid = 'admin';
-    let red = 100;
-    let green = 120;
-    let blue = 200;
-    let relay = 1;
-    let aTime = "2020-02-14 09:51:23";
-    let aUid = 'admin';
+const template = require('./template');
+const header = template.header();
+
+module.exports.home = function(navBar, menuLink, sensor, actuator) {
+    let temp = sensor.temperature;
+    let humid = sensor.humidity;
+    let cds = sensor.cds;
+    let dist = sensor.distance;
+    let sTime = sensor.sTime;
+    let sUid = sensor.uid;
+    let red = actuator.redLED;
+    let green = actuator.greenLED;
+    let blue = actuator.blueLED;
+    let relay = actuator.relay;
+    let aTime = actuator.aTime;
+    let reason = actuator.reason;
+    let aUid = actuator.uid;
     return `
-<html>
+    <!DOCYYPE html>
+    <html lang='ko'>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- ==================================================================== -->
-    <title>강남 스마트팜</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	${header}
 </head>
 <body>
 <div class="container">
@@ -84,9 +79,11 @@ module.exports.home = function(navBar, menuLink) {
                                 </div></td>
                             <td>${sUid}</td>
                         </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: right;">최종 측정시각: ${sTime}</td>
+                        </tr>
                         </tbody>
                     </table>
-                    <p style="text-align: right;">최종 측정시각: ${sTime}</p>
                 </div>
                 <div class="col-1"></div><br>
                 <div class="col-11">
@@ -132,9 +129,12 @@ module.exports.home = function(navBar, menuLink) {
                                 </div></td>
                             <td>${aUid}</td>
                         </tr>
+                        <tr>
+                            <td colspan="2">조작 사유: ${reason}</td>
+                            <td colspan="2" style="text-align: right;">최종 조작시각: ${aTime}</td>
+                        </tr>
                         </tbody>
                     </table>
-                    <p style="text-align: right;">최종 조작시각: ${aTime}</p>
                 </div>
                 <div class="col-1"></div><br>
                 </div>

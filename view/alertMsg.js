@@ -1,7 +1,8 @@
 module.exports.alertMsg = function(message, url) {
     return `
         <!doctype html>
-        <html>
+        <!DOCYYPE html>
+        <html lang='ko'>
         <head>
             <title>Alert Message</title>
             <meta charset="utf-8">

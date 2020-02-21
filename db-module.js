@@ -39,6 +39,33 @@ module.exports = {
         });
         db.close();
     },
+    getUsers: function(pageNo, callback) {                  // 페이지 지원
+        let db = new sqlite3.Database("db/smartfarm.db");
+        let offset = (pageNo - 1) * 10;
+        let sql = `SELECT l.uid, l.name, r.name deptName, l.tel, strftime('%Y-%m-%d', regDate, 'localtime') ts FROM user l join dept r on l.deptId = r.did LIMIT 10 OFFSET ?`;
+        let stmt = db.prepare(sql);
+        stmt.all(offset, function(err, rows) {
+            if (err) {
+                console.error('getUsers DB 오류', err);
+                return;
+            }
+            callback(rows);
+        });
+        stmt.finalize();
+        db.close();
+    },
+    getUserCount:function(callback) {                  // 페이지 지원
+        let db = new sqlite3.Database("db/smartfarm.db");
+        let sql = `SELECT count(*) count FROM user`;
+        db.each(sql, function(err, rows) {
+            if (err) {
+                console.error('getUserCount DB 오류', err);
+                return;
+            }
+            callback(rows);
+        });
+        db.close();
+    },
     getUserInfo: function(uid, callback) {
         let db = new sqlite3.Database("db/smartfarm.db");
         //let sql = `SELECT l.uid, l.name, r.name deptName, l.tel, strftime('%Y-%m-%d', regDate, 'localtime') ts FROM user l join dept r on l.deptId = r.did where uid=?`;
@@ -68,11 +95,11 @@ module.exports = {
         stmt.finalize();
         db.close();
     },
-    updateUser: function(uid, name, deptId, tel, callback) {
+    updateUser: function(uid, password, name, deptId, tel, callback) { 
         let db = new sqlite3.Database("db/smartfarm.db");
-        let sql = `UPDATE user SET name=?, deptId=?, tel=? WHERE uid=?`;
+        let sql = `UPDATE user SET password=?, name=?, deptId=?, tel=? WHERE uid=?`;
         let stmt = db.prepare(sql);
-        stmt.run(name, deptId, tel, uid, function(err) {
+        stmt.run(password, name, deptId, tel, uid, function(err) {
             if (err) {
                 console.error('updateUser DB 오류', err);
                 return;
@@ -94,6 +121,58 @@ module.exports = {
             callback();
         });
         stmt.finalize();
+        db.close();
+    },
+    getCurrentSensor: function(callback) {
+        let db = new sqlite3.Database("db/smartfarm.db");
+        let sql = `SELECT temperature, humidity, cds, distance, strftime('%Y-%m-%d %H:%M:%S', sensingTime, 'localtime') sTime, uid FROM sensor ORDER BY sid DESC LIMIT 1`;
+        db.each(sql, function(err, row) {
+            if (err) {
+                console.error('getCurrentSensor DB 오류', err);
+                return;
+            }
+            callback(row);
+        });
+        db.close();
+    },
+    insertSensor: function(temp, humid, cds, dist, uid, callback) {
+        let db = new sqlite3.Database("db/smartfarm.db");
+        let sql = `INSERT INTO sensor(temperature, humidity, cds, distance, uid) values (?,?,?,?,?)`;
+        let stmt = db.prepare(sql);
+        stmt.run(temp, humid, cds, dist, uid, function(err) {
+            if (err) {
+                console.error('insertSensor DB 오류', err);
+                return;
+            }
+            callback();
+        });
+        stmt.finalize();
+        db.close();
+    },
+    insertActuator: function(redLED, greenLED, blueLED, relay, reason, uid, callback) {
+        let db = new sqlite3.Database("db/smartfarm.db");
+        let sql = `INSERT INTO actuator(redLED, greenLED, blueLED, relay, reason, uid) values (?,?,?,?,?,?)`;
+        let stmt = db.prepare(sql);
+        stmt.run(redLED, greenLED, blueLED, relay, reason, uid, function(err) {
+            if (err) {
+                console.error('insertActuator DB 오류', err);
+                return;
+            }
+            callback();
+        });
+        stmt.finalize();
+        db.close();
+    },
+    getCurrentActuator: function(callback) {
+        let db = new sqlite3.Database("db/smartfarm.db");
+        let sql = `SELECT redLED, greenLED, blueLED, relay, strftime('%Y-%m-%d %H:%M:%S', actionTime, 'localtime') aTime, reason, uid FROM actuator ORDER BY aid DESC LIMIT 1`;
+        db.each(sql, function(err, row) {
+            if (err) {
+                console.error('getCurrentActuator DB 오류', err);
+                return;
+            }
+            callback(row);
+        });
         db.close();
     }
 }
